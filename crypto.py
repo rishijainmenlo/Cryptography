@@ -65,6 +65,23 @@ def encrypt_vigenere(plaintext, keyword):
 def decrypt_vigenere(ciphertext, keyword):
     pass
 
+def vigenere_key(plaintext, keyword):
+    keylist = list(keyword)
+    if len(plaintext) == len(keylist):
+        return keyword
+    if len(plaintext) < len(keyword):
+        keylist = keyword[0:len(keyword)-(len(keyword)-len(plaintext))]
+        return ("".join(keylist))
+    else:
+        for character in range(len(plaintext)-len(keylist)):
+            keylist.append(keylist[character%len(keylist)])
+    newKeyWord = "".join(keylist)
+    return newKeyWord
+        
+
+
+
+
 # Merkle-Hellman Knapsack Cryptosystem
 # Arguments: integer
 # Returns: tuple (W, Q, R) - W a length-n tuple of integers, Q and R both integers
@@ -92,6 +109,7 @@ def main():
     print("Encryption: " + string1)
     string2 = decrypt_caesar(string1, 1)
     print("Decryption: " + string2)
+    print(vigenere_key("ATTACKATDAWN", "LEMON"))
 
 if __name__ == "__main__":
     main()
