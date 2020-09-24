@@ -58,12 +58,26 @@ def decrypt_help(numValue, offset):
 # Arguments: string, string
 # Returns: string
 def encrypt_vigenere(plaintext, keyword):
-    pass
+    encryptList = []
+    begNum = 65
+    for character in range(len(plaintext)):
+        numValue = (ord(plaintext[character]) + ord(keyword[character])) % 26
+        numValue += begNum
+        encryptList.append(chr(numValue))
+    encryptedWord = "".join(encryptList)
+    return encryptedWord
 
 # Arguments: string, string
 # Returns: string
 def decrypt_vigenere(ciphertext, keyword):
-    pass
+    decryptList = []
+    begNum = 65
+    for character in range(len(ciphertext)):
+        numValue = (ord(ciphertext[character]) - ord(keyword[character])) % 26
+        numValue += begNum
+        decryptList.append(chr(numValue))
+    decryptedWord = "".join(decryptList)
+    return decryptedWord
 
 def vigenere_key(plaintext, keyword):
     keylist = list(keyword)
@@ -105,11 +119,20 @@ def decrypt_mhkc(ciphertext, private_key):
 
 def main():
     # Testing code here
-    string1 = encrypt_caesar("ABCD", 1)
-    print("Encryption: " + string1)
-    string2 = decrypt_caesar(string1, 1)
-    print("Decryption: " + string2)
-    print(vigenere_key("ATTACKATDAWN", "LEMON"))
+    plaintext = "ATTACKATDAWN"
+    keyword = "LEMON"
+   
+    string1 = encrypt_caesar("X", 5)
+    print("Caesar Encryption: " + string1)
+    string2 = decrypt_caesar(string1, 5)
+    print("Caesar Decryption: " + string2)
+
+    vigenereKey = vigenere_key(plaintext, keyword)
+    print("Vigenere Key: " + vigenereKey)
+    string3 = encrypt_vigenere(plaintext, vigenereKey)
+    print("Vigenere Encryption: " + string3)
+    string4 = decrypt_vigenere(string3, vigenereKey)
+    print("Vigenere Decryption: " + string4)
 
 if __name__ == "__main__":
     main()
