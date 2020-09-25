@@ -1,3 +1,6 @@
+import math
+import random
+
 # Caesar Cipher
 # Arguments: string, integer
 # Returns: string
@@ -58,6 +61,7 @@ def decrypt_help(numValue, offset):
 # Arguments: string, string
 # Returns: string
 def encrypt_vigenere(plaintext, keyword):
+    keyword = vigenere_key(plaintext, keyword)
     encryptList = []
     begNum = 65
     for character in range(len(plaintext)):
@@ -70,6 +74,7 @@ def encrypt_vigenere(plaintext, keyword):
 # Arguments: string, string
 # Returns: string
 def decrypt_vigenere(ciphertext, keyword):
+    keyword = vigenere_key(ciphertext, keyword)
     decryptList = []
     begNum = 65
     for character in range(len(ciphertext)):
@@ -91,28 +96,63 @@ def vigenere_key(plaintext, keyword):
             keylist.append(keylist[character%len(keylist)])
     newKeyWord = "".join(keylist)
     return newKeyWord
-        
-
-
 
 
 # Merkle-Hellman Knapsack Cryptosystem
 # Arguments: integer
 # Returns: tuple (W, Q, R) - W a length-n tuple of integers, Q and R both integers
-def generate_private_key(n=8):
-    pass
+def generate_private_key(n = 8):
+    W = []
+    total = 1
+    for bit in range (n):
+        num = random.randint(total + 1,2 * total)
+        total += num
+        W.append(num)
+    Q = random.randint(total, total * 2)
+    R = random.randint(2, Q - 1)
+    while (math.gcd(R, Q) != 1):
+        R = random.randint(2, Q - 1)
+    return (tuple(W), Q, R)
+
 
 # Arguments: tuple (W, Q, R) - W a length-n tuple of integers, Q and R both integers
-# Returns: tuple B - a length-n tuple of integers
+# Returns: B - a length-n tuple of integers
 def create_public_key(private_key):
-    pass
+    W, Q, R = private_key
+    B = []
+    for element in W:
+        B.append((R * element) % Q)
+    return tuple(B)
 
-# Arguments: string, tuple (W, Q, R)
+
+# Arguments: string, tuple B
 # Returns: list of integers
 def encrypt_mhkc(plaintext, public_key):
     pass
 
-# Arguments: list of integers, tuple B - a length-n tuple of integers
+def bits_to_byte(bits):
+    bitsAsStrings = []
+    for element in bits:
+        bitsAsStrings.append(str(element))
+    bitString = "".join(bitsAsStrings)
+    decimal = int(bitString, 2)
+    return decimal
+
+
+def byte_to_bit(byte):
+    bits = []
+    binary = bin(byte)[2:]
+    for element in binary:
+        bits.append(element)
+    if len(bits) < 8:
+        remainder = 8 % len(bits)
+        for num in range (0, remainder):
+            bits.insert(0, 0)
+        return bits
+
+
+
+# Arguments: list of integers, private key (W, Q, R) with W a tuple.
 # Returns: bytearray or str of plaintext
 def decrypt_mhkc(ciphertext, private_key):
     pass
@@ -127,12 +167,15 @@ def main():
     string2 = decrypt_caesar(string1, 5)
     print("Caesar Decryption: " + string2)
 
-    vigenereKey = vigenere_key(plaintext, keyword)
-    print("Vigenere Key: " + vigenereKey)
-    string3 = encrypt_vigenere(plaintext, vigenereKey)
+    
+    string3 = encrypt_vigenere(plaintext, keyword)
     print("Vigenere Encryption: " + string3)
-    string4 = decrypt_vigenere(string3, vigenereKey)
+    string4 = decrypt_vigenere(string3, keyword)
     print("Vigenere Decryption: " + string4)
+
+    print (generate_private_key())
+
+    print (bits_to_byte([0,0,0,1,0,1,0,1]))
 
 if __name__ == "__main__":
     main()
