@@ -10,7 +10,6 @@ def encrypt_caesar(plaintext, offset):
     begNum = 65
     endNum = 90
     numInAlpha = 26
-    
     for character in plaintext:
         if character in alpha:
             numValue = ord(character) - begNum
@@ -21,7 +20,9 @@ def encrypt_caesar(plaintext, offset):
         else:
             encryptedString = "No message received"
     return encryptedString
-
+    
+# Arguments: integer, integer
+# Returns: string
 def encrypt_help(numValue, offset):
     eString = ""
     numInAlpha = 26
@@ -36,7 +37,6 @@ def decrypt_caesar(ciphertext, offset):
     decryptedString = ""
     alpha = "ABCDEFGHIJKLMNOPOQSTUVWXYZ"
     begNum = 65
-
     for character in ciphertext:
         if character in alpha:
             numValue = ord(character) - begNum
@@ -48,6 +48,8 @@ def decrypt_caesar(ciphertext, offset):
             decryptedString = "No message received"
     return decryptedString
 
+# Arguments integer, integer
+# Returns: string
 def decrypt_help(numValue, offset):
     dString = ""
     numInAlpha = 26
@@ -84,6 +86,8 @@ def decrypt_vigenere(ciphertext, keyword):
     decryptedWord = "".join(decryptList)
     return decryptedWord
 
+# Arguments: string, string
+# Returns: string
 def vigenere_key(plaintext, keyword):
     keylist = list(keyword)
     if len(plaintext) == len(keylist):
@@ -128,8 +132,49 @@ def create_public_key(private_key):
 # Arguments: string, tuple B
 # Returns: list of integers
 def encrypt_mhkc(plaintext, public_key):
-    pass
+    encrypted = []
+    M = []
+    for character in plaintext:
+        C = 0
+        M = byte_to_bits(ord(character))
+        for position in range (0, 8):
+            x = int(M[position])
+            y = int(public_key[position])
+            C += (x*y)
+        encrypted.append(C)
+    return encrypted
+    
 
+# Arguments: list of integers, private key (W, Q, R) with W a tuple.
+# Returns: bytearray or str of plaintext
+def decrypt_mhkc(ciphertext, private_key):
+    W = private_key[0]
+    Q = private_key[1]
+    R = private_key[2]
+    S = findS(R, Q)
+    Decrypted = []
+    for character in ciphertext:
+        C = character * S % Q
+        bitString = []
+        for element in reversed(W):
+            if element <= C:
+                bitString.append(1)
+                C = C - element
+            else:
+                bitString.append(0)
+        Decrypted.append(chr(bits_to_byte(reversed(bitString))))
+    return "".join(Decrypted)
+
+# Arguments: integer, integer
+# Returns: integer
+def findS(R, Q):
+    for S in range(2, Q - 1):
+        if (R * S % Q == 1):
+            return S
+    return 0
+        
+# Arguments: List of integers, 1s and 0s
+# returns: integer
 def bits_to_byte(bits):
     bitsAsStrings = []
     for element in bits:
@@ -138,7 +183,8 @@ def bits_to_byte(bits):
     decimal = int(bitString, 2)
     return decimal
 
-
+# Arguments: integer
+# returns: list of 1s and 0s
 def byte_to_bit(byte):
     bits = []
     binary = bin(byte)[2:]
@@ -148,34 +194,28 @@ def byte_to_bit(byte):
         remainder = 8 % len(bits)
         for num in range (0, remainder):
             bits.insert(0, 0)
-        return bits
+    return bits
 
-
-
-# Arguments: list of integers, private key (W, Q, R) with W a tuple.
-# Returns: bytearray or str of plaintext
-def decrypt_mhkc(ciphertext, private_key):
-    pass
 
 def main():
     # Testing code here
-    plaintext = "ATTACKATDAWN"
-    keyword = "LEMON"
-   
-    string1 = encrypt_caesar("X", 5)
-    print("Caesar Encryption: " + string1)
-    string2 = decrypt_caesar(string1, 5)
-    print("Caesar Decryption: " + string2)
-
-    
-    string3 = encrypt_vigenere(plaintext, keyword)
-    print("Vigenere Encryption: " + string3)
-    string4 = decrypt_vigenere(string3, keyword)
-    print("Vigenere Decryption: " + string4)
-
-    print (generate_private_key())
-
-    print (bits_to_byte([0,0,0,1,0,1,0,1]))
+#    plaintext = "ATTACKATDAWN"
+#    keyword = "LEMON"
+#
+#    string1 = encrypt_caesar(" ", 5)
+#    print("Caesar Encryption: " + string1)
+#    string2 = decrypt_caesar(string1, 5)
+#    print("Caesar Decryption: " + string2)
+#
+#
+#    string3 = encrypt_vigenere(plaintext, keyword)
+#    print("Vigenere Encryption: " + string3)
+#    string4 = decrypt_vigenere(string3, keyword)
+#    print("Vigenere Decryption: " + string4)
+    p = generate_private_key()
+    b = (create_public_key(p))
+    x = (encrypt_mhkc("HELLO",b))
+    print(decrypt_mhkc(x, p))
 
 if __name__ == "__main__":
     main()
