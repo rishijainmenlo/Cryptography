@@ -185,7 +185,7 @@ def bits_to_byte(bits):
 
 # Arguments: integer
 # returns: list of 1s and 0s
-def byte_to_bit(byte):
+def byte_to_bits(byte):
     bits = []
     binary = bin(byte)[2:]
     for element in binary:
@@ -212,10 +212,17 @@ def main():
 #    print("Vigenere Encryption: " + string3)
 #    string4 = decrypt_vigenere(string3, keyword)
 #    print("Vigenere Decryption: " + string4)
-    p = generate_private_key()
-    b = (create_public_key(p))
-    x = (encrypt_mhkc("HELLO",b))
-    print(decrypt_mhkc(x, p))
+    # p = generate_private_key()
+    # b = (create_public_key(p))
+    # x = (encrypt_mhkc("HELLO",b))
+    # print(decrypt_mhkc(x, p))
+
+    # private = ((10, 14, 35, 115, 248, 677, 1413, 3644), 10242, 5)
+    # public = (50, 70, 175, 575, 1240, 3385, 7065, 7978)
+    # message = "FOREACHEPSILONGREATERTHANDELTA"
+    # encrypted = encrypt_mhkc(message, public)
+    # print(encrypted)
+    # print(decrypt_mhkc(encrypted, private))
 
 if __name__ == "__main__":
     main()
